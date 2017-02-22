@@ -1,0 +1,128 @@
+#第16組 主題四
+
+```{r}
+require(stringr)
+require(dplyr)
+require(ggplot2)
+library(tidyverse)
+library(tidytext)
+```
+
+```{r}
+Data11one <- read.csv("Data110105.csv",
+            row.names = 1,
+            fileEncoding = "utf8")
+Data11two <- read.csv("Data110610.csv",
+            row.names = 1,
+            fileEncoding = "utf8")
+Data11three <- read.csv("Data111115.csv",
+            row.names = 1,
+            fileEncoding = "utf8")
+Data11four <- read.csv("Data111620.csv",
+            row.names = 1,
+            fileEncoding = "utf8")
+Data11five <- read.csv("Data112125.csv",
+            row.names = 1,
+            fileEncoding = "utf8")
+Data11six <- read.csv("Data112630.csv",
+            row.names = 1,
+            fileEncoding = "utf8")
+Data11 <- bind_rows(Data11one,Data11two) %>%
+  bind_rows(Data11three) %>%
+  bind_rows(Data11four) %>%
+  bind_rows(Data11five) %>%
+  bind_rows(Data11six)
+```
+
+```{r}
+patternNews1 = "川普|希拉蕊|美國總統|三普|肥希|總統大選|我川|希媽"
+NewsArticle1Count <- mutate(Data11, news1pattern = str_detect(Data11$Main, pattern = patternNews1)) %>%
+  filter(news1pattern == TRUE) %>%
+  group_by(Date) %>%
+  count(Date)
+NewsArticle1Count
+
+```
+
+```{r}
+patternNews2 = "MLB|小熊|百年|魔咒|芝加哥"
+NewsArticle2Count <- mutate(Data11, news2pattern = str_detect(Data11$Main, pattern = patternNews2)) %>%
+  filter(news2pattern == TRUE) %>%
+  group_by(Date) %>%
+  count(Date)
+NewsArticle2Count
+```
+
+```{r}
+patternNews3 = "韓國|朴謹惠|青瓦台|包圍|抗議"
+NewsArticle3Count <- mutate(Data11, news3pattern = str_detect(Data11$Main, pattern = patternNews3)) %>%
+  filter(news3pattern == TRUE) %>%
+  group_by(Date) %>%
+  count(Date)
+NewsArticle3Count
+```
+
+```{r}
+patternNews4 = "復興|復航|林明昇|興航|賣跑車|停飛"
+NewsArticle4Count <- mutate(Data11, news4pattern = str_detect(Data11$Main, pattern = patternNews4)) %>%
+  filter(news4pattern == TRUE) %>%
+  group_by(Date) %>%
+  count(Date)
+NewsArticle4Count
+```
+
+```{r}
+New1 <- ggplot(NewsArticle1Count, aes(x = Date, y = n)) + 
+  geom_bar(stat="identity",aes(fill = Date)) +
+  geom_text(aes(label=n),size = 3,colour="black")+
+  labs(title = "美國大選" ,
+       x = "日期",
+       y = "計數") + 
+  theme(axis.text.x = element_text(angle = 45, size=8,hjust = 1)) + 
+  guides(fill = FALSE)
+New1
+```
+
+```{r}
+New2 <- ggplot(NewsArticle2Count, aes(x = Date, y = n)) + 
+  geom_bar(stat="identity",aes(fill = Date)) +
+  geom_text(aes(label=n),size = 3,colour="black")+
+  labs(title = "小熊突破百年魔咒" ,
+       x = "日期",
+       y = "計數") + 
+  theme(axis.text.x = element_text(angle = 45, size=8,hjust = 1)) + 
+  guides(fill = FALSE)
+New2
+```
+
+```{r}
+New3 <- ggplot(NewsArticle3Count, aes(x = Date, y = n)) + 
+  geom_bar(stat="identity",aes(fill = Date)) +
+  geom_text(aes(label=n),size = 3,colour="black")+
+  labs(title = "韓國百萬抗議遊行" ,
+       x = "日期",
+       y = "計數") + 
+  theme(axis.text.x = element_text(angle = 45, size=8,hjust = 1)) + 
+  guides(fill = FALSE)
+New3
+```
+
+```{r}
+New4 <- ggplot(NewsArticle4Count, aes(x = Date, y = n)) + 
+  geom_bar(stat="identity",aes(fill = Date)) +
+  geom_text(aes(label=n),size = 3,colour="black")+
+  labs(title = "復興航空無預警倒閉" ,
+       x = "日期",
+       y = "計數") + 
+  theme(axis.text.x = element_text(angle = 45, size=8,hjust = 1)) + 
+  guides(fill = FALSE)
+New4
+```
+
+```{r}
+ggsave(filename = 'news1.png', plot = New1, device = "png")
+ggsave(filename = 'news2.png', plot = New2, device = "png")
+ggsave(filename = 'news3.png', plot = New3, device = "png")
+ggsave(filename = 'news4.png', plot = New4, device = "png")
+```
+
